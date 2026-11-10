@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 app = FastAPI(
@@ -8,46 +9,31 @@ app = FastAPI(
     version="1.0"
 )
 
-# Lista inicial de estudiantes
 estudiantes = [
     {"id": 1, "nombre": "Adrian", "edad": 20},
     {"id": 2, "nombre": "Maria", "edad": 21},
     {"id": 3, "nombre": "Pablo", "edad": 19}
 ]
 
-
-# Modelo de datos
 class Estudiante(BaseModel):
     nombre: str
     edad: int
 
-
-# Ruta principal
 @app.get("/")
 def inicio():
-    return {"mensaje": "API funcionando correctamente"}
+    return FileResponse("index.html")
 
-
-# Obtener todos los estudiantes
 @app.get("/estudiantes")
 def obtener_estudiantes():
     return estudiantes
 
-
-# Obtener un estudiante por ID
 @app.get("/estudiantes/{id}")
 def obtener_estudiante(id: int):
     for estudiante in estudiantes:
         if estudiante["id"] == id:
             return estudiante
+    raise HTTPException(404, "Estudiante no encontrado")
 
-    raise HTTPException(
-        status_code=404,
-        detail="Estudiante no encontrado"
-    )
-
-
-# Crear un nuevo estudiante
 @app.post("/estudiantes")
 def crear_estudiante(estudiante: Estudiante):
     nuevo = {
@@ -55,7 +41,5 @@ def crear_estudiante(estudiante: Estudiante):
         "nombre": estudiante.nombre,
         "edad": estudiante.edad
     }
-
     estudiantes.append(nuevo)
-
     return nuevo
