@@ -1,3 +1,14 @@
+# Tokens y variables privadas
 token.env
 .env
 *.env
+
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
